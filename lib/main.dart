@@ -79,6 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   String ville = villes[i - 2];
                   return new ListTile(
                     title: textAvecStyle(ville),
+                    trailing: new IconButton(
+                        icon: new Icon(Icons.delete, color: Colors.white,),
+                        onPressed: (() => supprimer(ville))),
                     onTap: (){
                       setState(() {
                         villeChoisie = ville;
@@ -143,6 +146,13 @@ class _MyHomePageState extends State<MyHomePage> {
       villes.add(str);
       await sharedPreferences.setStringList(key, villes);
       obtenir();
+    }
+
+    void supprimer(String str)async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    villes.remove(str);
+    await sharedPreferences.setStringList(key, villes);
+    obtenir();
     }
 
 }
