@@ -51,9 +51,8 @@ String villeChoisie = null;
                           child: textAvecStyle("Ajouter une ville", color: Colors.blue),
                           elevation: 8.0,
                           color: Colors.white,
-                          onPressed: (){
-
-                      })
+                          onPressed: ajoutVille
+                      ),
                     ],
                   ),
                 );
@@ -97,5 +96,25 @@ String villeChoisie = null;
       fontStyle: fontStyle,
       color: color
     ),);
+  }
+
+  Future<Null> ajoutVille()async{
+    return showDialog(context: context,
+    barrierDismissible: true,
+    builder: (BuildContext buildContext){
+      return new SimpleDialog(
+        contentPadding: EdgeInsets.all(20.0),
+        title: textAvecStyle("Ajouter une ville", fontSize: 22.0, color: Colors.blue),
+        children: <Widget>[
+          new TextField(
+            decoration: new InputDecoration(labelText: "ville: "),
+            onSubmitted: (String str){
+              Navigator.pop(buildContext);
+            },
+          )
+        ],
+      );
+    }
+    );
   }
 }
