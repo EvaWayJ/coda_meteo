@@ -152,9 +152,25 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        body: Center(
+        body: (tempsActuel == null ) ? new Center(
           child: new Text((villeChoisie==null)? widget.villeDeUtilisateur: villeChoisie),
         )
+            : new Container(
+          padding: EdgeInsets.all(20.0),
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              textAvecStyle(tempsActuel.name),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  textAvecStyle("${tempsActuel.temp.toInt()} C°"),
+                  //new Image.asset(tempsActuel.icon)
+                ],
+              )
+            ],
+          ),
+        ),
     );
   }
 
