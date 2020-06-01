@@ -43,7 +43,19 @@ String villeChoisie = null;
             itemBuilder: (context,i){
               if(i == 0){
                 return DrawerHeader(
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      textAvecStyle("Mes Villes", fontSize: 22.0),
+                      new RaisedButton(
+                          child: textAvecStyle("Ajouter une ville", color: Colors.blue),
+                          elevation: 8.0,
+                          color: Colors.white,
+                          onPressed: (){
 
+                      })
+                    ],
+                  ),
                 );
               }else if (i==1){
                 return new ListTile(
