@@ -85,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     obtenir();
+    coordonnees();
   }
 
   @override
@@ -121,6 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: (){
                       setState(() {
                         villeChoisie=null;
+                        coordonnees();
                         Navigator.pop(context);
                       });
                     },
@@ -135,6 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: (){
                       setState(() {
                         villeChoisie = ville;
+                        coordonnees();
                         Navigator.pop(context);
                       });
                     },
@@ -205,4 +208,16 @@ class _MyHomePageState extends State<MyHomePage> {
     obtenir();
     }
 
+    void coordonnees()async{
+    String str;
+    if(villeChoisie == null){
+      str = widget.villeDeUtilisateur;
+    }else{
+      str = villeChoisie;
+    }
+    List<Address> coord = await Geocoder.local.findAddressesFromQuery(str);
+    if(coord != null){
+      coord.forEach((Address) => print(Address.coordinates));
+    }
+    }
 }
