@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:http/http.dart' as http;
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
     obtenir();
-    coordonnees();
+    appelApi();
   }
 
   @override
@@ -122,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: (){
                       setState(() {
                         villeChoisie=null;
-                        coordonnees();
+                        appelApi();
                         Navigator.pop(context);
                       });
                     },
@@ -137,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: (){
                       setState(() {
                         villeChoisie = ville;
-                        coordonnees();
+                        appelApi();
                         Navigator.pop(context);
                       });
                     },
@@ -208,16 +209,26 @@ class _MyHomePageState extends State<MyHomePage> {
     obtenir();
     }
 
-    void coordonnees()async{
-    String str;
-    if(villeChoisie == null){
-      str = widget.villeDeUtilisateur;
-    }else{
-      str = villeChoisie;
-    }
-    List<Address> coord = await Geocoder.local.findAddressesFromQuery(str);
-    if(coord != null){
-      coord.forEach((Address) => print(Address.coordinates));
-    }
+    void appelApi()async{
+      String str;
+      if(villeChoisie == null){
+        str = widget.villeDeUtilisateur;
+      }else{
+        str = villeChoisie;
+      }
+      List<Address> coord = await Geocoder.local.findAddressesFromQuery(str);
+      if(coord != null){
+        final lat = coord.first.coordinates.latitude;
+        final lon = coord.first.coordinates.longitude;
+        String lang = Localizations.localeOf(context).languageCode;
+        final key = "577372432a77f2fe86a8a2018ba0ad1d";
+
+        String urlAPI = "http://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&units=metric&lang&APPID=$key";
+        final reponse = await http.get(urlAPI);
+        if(reponse.statusCode==200){
+          print(reponse.body);
+        }
+
+      }
     }
 }
