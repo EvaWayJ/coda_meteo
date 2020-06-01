@@ -13,7 +13,8 @@ import 'package:codameteo/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    String ville = "Paris";
+    await tester.pumpWidget(MyApp( ville));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

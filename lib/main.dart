@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart';
+import 'package:geocoder/geocoder.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,11 +34,24 @@ void main() async{
   }
   if(position!=null){
     print(position);
-    runApp(MyApp());
+    final latitude = position.latitude;
+    final longitude = position.longitude;
+    final Coordinates coordinates = new Coordinates(latitude, longitude);
+    final ville = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    if(ville != null){
+      print(ville.first.locality);
+      runApp(MyApp(ville.first.locality));
+    }
   }
 }
 
 class MyApp extends StatelessWidget {
+
+  String ville;
+
+  MyApp(String ville){
+    this.ville = ville;
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -46,14 +60,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Coda Météo'),
+      home: MyHomePage(ville,title: 'Coda Météo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
+  MyHomePage(String ville,{Key key, this.title}) : super(key: key){
+    this.villeDeUtilisateur = ville;
+  }
+   String villeDeUtilisateur;
   final String title;
 
   @override
@@ -101,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 }else if (i==1){
                   return new ListTile(
-                    title: textAvecStyle("Ma ville actuelle"),
+                    title: textAvecStyle(widget.villeDeUtilisateur),
                     onTap: (){
                       setState(() {
                         villeChoisie=null;
@@ -129,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         body: Center(
-          child: new Text((villeChoisie==null)? "Ville actuelle": villeChoisie),
+          child: new Text((villeChoisie==null)? widget.villeDeUtilisateur: villeChoisie),
         )
     );
   }
