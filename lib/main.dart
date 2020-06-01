@@ -119,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
               new TextField(
                 decoration: new InputDecoration(labelText: "ville: "),
                 onSubmitted: (String str){
+                  ajouter(str);
                   Navigator.pop(buildContext);
                 },
               )
@@ -128,13 +129,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void obtenir()async{
+  void obtenir()async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    List <String> liste =  await sharedPreferences.getStringList(key);
-    if(liste != null){
+    List <String> liste = await sharedPreferences.getStringList(key);
+    if (liste != null) {
       setState(() {
         villes = liste;
       });
     }
   }
+    void ajouter(String str)async{
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      villes.add(str);
+      await sharedPreferences.setStringList(key, villes);
+      obtenir();
+    }
+
 }
