@@ -26,8 +26,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-List<String> ville = ["Paris"];
-String vileChoisie = null;
+List<String> villes = ["Paris"];
+String villeChoisie = null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,24 +39,51 @@ String vileChoisie = null;
         child: new Container(
           color: Colors.blue,
           child: new ListView.builder(
-            itemCount: ville.length,
+            itemCount: villes.length + 2,
             itemBuilder: (context,i){
-              return new ListTile(
-                title: new Text(ville[i]),
-                onTap: (){
-                  setState(() {
-                    vileChoisie= ville[i];
-                    Navigator.pop(context);
-                  });
-                },
-              );
+              if(i == 0){
+                return DrawerHeader(
+
+                );
+              }else if (i==1){
+                return new ListTile(
+                  title: textAvecStyle("Ma ville actuelle"),
+                  onTap: (){
+                    setState(() {
+                      villeChoisie=null;
+                      Navigator.pop(context);
+                    });
+                  },
+                );
+              } else{
+                String ville = villes[i - 2];
+                return new ListTile(
+                  title: textAvecStyle(ville),
+                  onTap: (){
+                    setState(() {
+                      villeChoisie = ville;
+                      Navigator.pop(context);
+                    });
+                  },
+                );
+              }
             },
           ),
         ),
       ),
       body: Center(
-        child: new Text((vileChoisie==null)? "Ville actuelle": vileChoisie),
+        child: new Text((villeChoisie==null)? "Ville actuelle": villeChoisie),
       )
     );
+  }
+
+  Text textAvecStyle(String data, {color: Colors.white, fontSize: 17.0, fontStyle: FontStyle.italic, textAlign : TextAlign.center}){
+    return new Text(data,
+      textAlign: textAlign,
+    style: new TextStyle(
+      fontSize: fontSize,
+      fontStyle: fontStyle,
+      color: color
+    ),);
   }
 }
