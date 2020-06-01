@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:http/http.dart' as http;
+import 'temps.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,7 +73,7 @@ class MyHomePage extends StatefulWidget {
   MyHomePage(String ville,{Key key, this.title}) : super(key: key){
     this.villeDeUtilisateur = ville;
   }
-   String villeDeUtilisateur;
+  String villeDeUtilisateur;
   final String title;
 
   @override
@@ -81,6 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String key = "villes";
   List<String> villes = ["Paris"];
   String villeChoisie = null;
+  Temps tempsActuel;
   @override
   void initState() {
     // TODO: implement initState
@@ -195,40 +199,46 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
-    void ajouter(String str)async{
-      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-      villes.add(str);
-      await sharedPreferences.setStringList(key, villes);
-      obtenir();
-    }
+  void ajouter(String str)async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    villes.add(str);
+    await sharedPreferences.setStringList(key, villes);
+    obtenir();
+  }
 
-    void supprimer(String str)async{
+  void supprimer(String str)async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     villes.remove(str);
     await sharedPreferences.setStringList(key, villes);
     obtenir();
+  }
+
+  void appelApi()async{
+    String str;
+    if(villeChoisie == null){
+      str = widget.villeDeUtilisateur;
+    }else{
+      str = villeChoisie;
     }
+    List<Address> coord = await Geocoder.local.findAddressesFromQuery(str);
+    if(coord != null){
+      final lat = coord.first.coordinates.latitude;
+      final lon = coord.first.coordinates.longitude;
+      String lang = Localizations.localeOf(context).languageCode;
+      final key = "577372432a77f2fe86a8a2018ba0ad1d";
 
-    void appelApi()async{
-      String str;
-      if(villeChoisie == null){
-        str = widget.villeDeUtilisateur;
-      }else{
-        str = villeChoisie;
-      }
-      List<Address> coord = await Geocoder.local.findAddressesFromQuery(str);
-      if(coord != null){
-        final lat = coord.first.coordinates.latitude;
-        final lon = coord.first.coordinates.longitude;
-        String lang = Localizations.localeOf(context).languageCode;
-        final key = "577372432a77f2fe86a8a2018ba0ad1d";
-
-        String urlAPI = "http://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&units=metric&lang&APPID=$key";
-        final reponse = await http.get(urlAPI);
-        if(reponse.statusCode==200){
-          print(reponse.body);
-        }
+      String urlAPI = "http://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&units=metric&lang&APPID=$key";
+      final reponse = await http.get(urlAPI);
+      if(reponse.statusCode==200){
+        Temps temps = new Temps();
+        Map map = json.decode(reponse.body);
+        temps.fromJson(map);
+        setState(() {
+          tempsActuel = temps;
+        });
 
       }
+
     }
+  }
 }
