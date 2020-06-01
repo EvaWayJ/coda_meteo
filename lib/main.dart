@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Coda Météo'),
     );
   }
 }
@@ -26,25 +26,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+List<String> ville = ["Paris"];
+String vileChoisie = null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-          ],
+      drawer: new Drawer(
+        child: new Container(
+          color: Colors.blue,
+          child: new ListView.builder(
+            itemCount: ville.length,
+            itemBuilder: (context,i){
+              return new ListTile(
+                title: new Text(ville[i]),
+                onTap: (){
+                  setState(() {
+                    vileChoisie= ville[i];
+                    Navigator.pop(context);
+                  });
+                },
+              );
+            },
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+      body: Center(
+        child: new Text((vileChoisie==null)? "Ville actuelle": vileChoisie),
+      )
     );
   }
 }
