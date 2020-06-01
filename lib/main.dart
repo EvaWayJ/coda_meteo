@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:codameteo/my_flutter_app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -167,7 +168,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   textAvecStyle("${tempsActuel.temp.toInt()} C°"),
                   //new Image.asset(tempsActuel.icon)
                 ],
-              )
+              ),
+ new Row(
+   children: <Widget>[
+     new Column(
+       children: <Widget>[
+         new Icon(MyFlutterApp.temperatire, color: Colors.black, size: 30.0,),
+         textAvecStyle("${tempsActuel.pressure}")
+       ],
+     )
+   ],
+ )
             ],
           ),
         ),
